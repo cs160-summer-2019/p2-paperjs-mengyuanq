@@ -4,12 +4,96 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Sacramento&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static '/vendors/bootstrap/css/bootstrap.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static '/css/main.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+ 
   	<title>P3 Coloring</title>
-
+  
 	<script type="text/javascript" src="{% static 'coloring/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
+  
+  
 
 	<style type="text/css">
+    
+    @import url("https://fonts.googleapis.com/css?family=Fira+Sans");
+   
+    
+    /* @ryan: please let me know how you think we should decorate the texts :o */
+    /* @sara: looove the font! maybe we could use a bubble? */
+   
+    #plus-one {
+      width: 120px;
+      height: 60px;
+      text-align:center;
+      padding:4px;
+
+      position: absolute;
+      font-family: 'Sacramento', cursive;
+      font-size: 2.5em;
+      color:#FFFFFF;
+      /*background-color: #f8b195;*/
+      background-color: #b36e6b;
+      background-image: url("https://www.transparenttextures.com/patterns/wall-4-light.png");
+      /*background image designed by Atle Mo http://www.atlemo.com/ */
+
+      border-radius: 35px;
+    }
+    
+    
+    #game-mode-quick-exit {
+      position: absolute;
+      width: 200px;
+      top: 200px;
+      right:0;
+      color:#f8b195;
+      cursor: pointer;
+    }
+    
+   
+    #score-plate {
+			position: absolute;
+      width:200px;
+      background-color: #f8b195;
+      top: 100px;
+      right:0;
+      text-align: center;
+       
+    }
+    
+   .text-score {
+     color: white;
+     font-size:1.2rem;
+    }
+    
+    #number-score {
+     color: white;
+     font-size:2.0rem;
+    
+    }
+    
+    #gameProgress {
+      width: 100%;
+      background-color: grey;
+
+    }
+
+   #gameBar {
+     width: 1%;
+     height: 30px;
+     background-color: #f8b195;
+     text-align: center;
+     color: white;
+    }
+    
 		#color-palette {
 			width: 300px;
 			background-color: #f1f1f1;
@@ -17,6 +101,7 @@
 			flex-wrap: wrap;
 			position: absolute;
 			top: 0;
+      right:0;
 		}
 
 		.swatch {
@@ -33,8 +118,36 @@
 		    padding-right: 0;
 		    margin-left: auto;
 		    margin-right: auto;
-		    display: block;
+		    display: block
 		}
+    
+    #gameMode {
+      width: 100px;
+      height: 100px;
+			flex-wrap: wrap;
+			position: absolute;
+      font-size:50px;
+      display:block;
+      background-color:#f8b195;
+      color:white;
+      top:0;
+		}
+    
+    #dropdown {
+      font-size: 19px;
+    }
+    
+    #musicPlayer {
+      background-color:#f8b195;
+    }
+    
+    #music {
+      color:#f8b195;
+    }
+    #beat {
+      color:#f8b195;
+    }
+   
 	</style>
 
 	<script type="text/javascript" canvas="canvas">
@@ -55,8 +168,18 @@
 				$container: $('#color-palette')
 			}
       
- 
+      var beatTimeStamp;
       
+      // hide before game mode is activated
+       $("#score-plate").hide();
+       $("#game-mode-quick-exit").hide();
+       $("#plus-one").hide();
+       
+      
+       var score = document.getElementById("number-score");  
+      
+      // boolean variable that indicates whether game mode or not
+      var gameMode = false;
 
 			// your rectangle gradient interaction goes in this function
 			// you may also add code outside of the function (e.g., global variables)
@@ -85,9 +208,108 @@
           };
 				}
 			}
+      
+      
 
 			// your custom interaction goes here!
-			// you may replace everything
+      // click on "music" from dropdown menu to show music player
+      $('#music').click(function() {
+        $("#musicPlayer").show();
+      });
+      
+      
+      
+      // click on "color on beat" and thereby turn on game mode
+       $('#beat').click(function() {
+        // game mode indicator on
+         gameMode = true;
+        // show the score board
+        $("#score-plate").show();
+        // show the exit button
+        $("#game-mode-quick-exit").show();
+        // show the progress of the game
+        $("#gameProgress").show();
+         audio.currentTime = 0;
+         // play music
+         audio.play();
+         // start progress bar
+         move();
+         
+        // calculate the timestamp of the beat
+        // this is set a little earlier than the actual timestamp to offset the limitation
+         setTimeout(function() {
+           
+           setInterval(function() { 
+           
+           beatTimeStamp = Date.now();
+           //console.log(beatTimeStamp); 
+                                   
+            }, 3350);}, 400);
+         
+         //after 990ms delay, beat drops every 3350ms
+         /*  actual timestamp at below
+         setTimeout(function() {
+           setInterval(function() {   
+           beatTimeStamp = Date.now();
+           console.log(beatTimeStamp);                        
+            }, 3350);}, 990);
+          */
+      });
+      
+      // click on times-circle button to hide music player
+      $('#remove-music').click(function() {
+        $("#musicPlayer").hide();
+      });
+      
+      // click on game-mode-quick-exit to exit game mode
+      $("#game-mode-quick-exit").click(function() {
+        
+        // game mode indicator off
+        gameMode = false;
+        
+        // hide score board and exit button
+        $("#score-plate").hide();
+        $("#game-mode-quick-exit").hide();
+       
+        audio.pause();
+        // clear progress bar
+        clear();
+        // clear score
+         score.innerHTML = Number(0);
+      });
+      
+      
+      
+      
+      // moves progress bar in game mode
+      function move() {
+      // progresses bar implementation inspired by w3schools
+        var elem = document.getElementById("gameBar");   
+        var width = 10;
+        var id = setInterval(frame, 1090);
+        function frame() {
+          // music over, progress bar reaches the end
+          if (width >= 100) {
+            // game mode is off
+            gameMode = false;
+            clearInterval(id);
+          } else {
+            // music still playing
+            width++; 
+            elem.style.width = width + '%'; 
+            elem.innerHTML = width * 1  + '%';
+          }
+        }
+      }
+      // clears progress bar
+      var zeroProgress = $("#gameProgress").clone();
+      function clear() {
+        $('#gameProgress').replaceWith(zeroProgress);
+        $('#gameProgress').hide();
+      }
+      
+      // ****** main function ******
+			// color the mandala
 			function myCustomInteraction() {
 				var tool = new paper.Tool();
 
@@ -95,6 +317,31 @@
 				    var hit = mandala.item.hitTest(event.point, { tolerance: 10, fill: true });
 				    if (hit) {
 				        hit.item.fillColor = cp.history[cp.history.length - 1];
+              
+                // the timestamp at which the user hits the canvas
+                var currentTimeStamp = Date.now();
+                //console.log("hit:"+currentTimeStamp);
+                //console.log("miss by:"+Math.abs(currentTimeStamp - beatTimeStamp));
+              
+                 
+                // if in game mode
+                if (gameMode) {
+                        // if user hits the beat on time
+                        if (Math.abs(currentTimeStamp - beatTimeStamp) < 1000) {
+                           // create a "+1" bubble
+                            var plusOne = document.getElementById("plus-one");
+                           // randomize the bubble's location
+                            plusOne.style.top = Math.floor((Math.random() * 200) + 100) + "px";
+                            plusOne.style.left = Math.floor((Math.random() * 500) + 400) + "px";
+                           // show the bubble
+                             $("#plus-one").show();
+                           // bubble should disappear after 1.0s
+                            setTimeout(function() {$("#plus-one").hide();}, 1000);
+                          // add to your score
+                            score.innerHTML = Number(score.innerHTML) + Number(1);
+                        } 
+                 }
+              
 				    }
 				}
 			}
@@ -148,6 +395,10 @@
 			// http://<your url>:8000/coloring/?type=gradient
 			// To see your myCustomInteraction version visit: 
 			// http://<your url>:8000/coloring/
+      
+      //audio 
+      var audio = new Audio('https://nancymusic.com/SOM/2019/gravity-dance.mp3');
+      
 			var url = window.location.href;
 			if (url.indexOf("gradient") > -1) {
 				init(false);
@@ -155,11 +406,73 @@
 				init(true);
 			}
 		}
+    
 	</script>
 </head>
 <body>	
 
 	<canvas id="myCanvas" width="750px" height="750px"></canvas>
+   
+<div>
+  <!--music icon dropdown menu-->
+   <div id="gameMode" class="w3-dropdown-hover">
+        <button class="w3-button"> <i class="fas fa-music"></i></button>
+        <div id="dropdown"class="w3-dropdown-content w3-bar-block w3-border">
+          <a href="#" id="music"class="w3-bar-item w3-button">Music</a>
+          <a href="#" id="beat" class="w3-bar-item w3-button">Color on Beat</a>
+        </div>
+  </div>
+  <!--audio player-->
+  <div align="center" id="musicPlayer" class="toShowplayer" style="display:none">
+    <!--curser change to finger pointer on mouseover-->
+    <h6>Gravity Dance&nbsp&nbsp&nbsp<i onmouseover="" style="cursor: pointer;"id="remove-music"class="fas fa-times-circle"></i></h6>
+   <audio controls>
+     <source src="https://nancymusic.com/SOM/2019/gravity-dance.mp3" type="audio/mp3">
+     <!--Audio courtesy of NancyMusic.com https://nancymusic.com/SOM/index.html-->
+     Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+</div>
+  
 	<div id="color-palette"></div>
+  
+  
+  <!--score plate where the score is shown-->
+  <div id="score-plate">
+      <!--The text: "score"-->
+      <div class="text-score" >
+        Your Score:
+      </div>
+      <!--The changing score as game progresses-->
+      <div id="number-score" >
+        0
+      </div>
+  </div>
+  
+ 
+  
+  <!--a button that allows user to exit game mode immediately, for "support exploration"-->
+  <div id="game-mode-quick-exit">
+      <!--let me know if you found a better looking button-->
+     
+      <i class="fas fa-sign-out-alt" style="font-size: 5.0em;"></i>
+  </div>
+  
+  <!--score received on one beat-->
+  <!--this all will be hidden before game mode-->
+  
+  <div id="plus-one">
+     <i class="fas fa-grin-wink"></i>
+    
+    +1
+  </div>
+  
+  <div id="gameProgress" style="display:none">
+  <div id="gameBar">10%</div>
+</div>
+  
+  
+  
 </body>
 </html>

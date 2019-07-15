@@ -25,7 +25,7 @@ SECRET_KEY = 'dt)!z4cwnj8#4e&rr94$k1s6^^(t*%@$2$)jt*hs&7^at-%72$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["p2-paperjs-mengyuanq-mengyuanq404017.codeanyapp.com"]
+ALLOWED_HOSTS = ["p2-saraw-ryanq-interactive-prototype-mengyuanq404017.codeanyapp.com"]
 
 
 # Application definition
